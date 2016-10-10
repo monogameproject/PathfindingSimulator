@@ -12,6 +12,8 @@ namespace Grid
     {
         List<Cell> openList;
         List<Cell> closedList;
+        Point wizardPosition;
+
         public Cell Position;
         //{
         //    get { return Position; }
@@ -21,6 +23,14 @@ namespace Grid
         public Wizard(Cell startPosition)
         {
             this.Position = startPosition;
+            this.wizardPosition = startPosition.Position;
+        }
+
+        public void Render(Graphics dc)
+        {
+            dc.FillRectangle(new SolidBrush(Color.White), Position.BoundingRectangle);
+            dc.DrawRectangle(new Pen(Color.Black), Position.BoundingRectangle);
+            dc.DrawImage(Image.FromFile(@"Images\Wizard.png"), Position.BoundingRectangle);
         }
 
         public void Astar(Cell start, Cell goal)
@@ -29,7 +39,6 @@ namespace Grid
             closedList = new List<Cell>();
 
             start = Position;
-
 
         }
     }

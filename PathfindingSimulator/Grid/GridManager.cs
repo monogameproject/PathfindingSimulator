@@ -49,7 +49,7 @@ namespace Grid
                     cell.Sprite = Image.FromFile(@"Images\Grass.png");
                 }
             }
-            
+            wizard.Render(dc);
             backBuffer.Render();
         }
 
@@ -238,10 +238,10 @@ namespace Grid
 
 
             }
-            //Creates the Wizard
+           
             wizard = new Wizard(wStartCell);
+            
 
-            //Creates the keys
             Random rnd = new Random();
 
             int rndtal = rnd.Next(0, emptylist.Count);
@@ -256,7 +256,7 @@ namespace Grid
 
             iceKey.MyType = CellType.ICEKEY;
             iceKey.Walkable = true;
-            iceKey.Sprite = Image.FromFile(@"Images\GoldKey.png");
+            iceKey.Sprite = Image.FromFile(@"Images\BlueKey.png");
         }
     }
 }
