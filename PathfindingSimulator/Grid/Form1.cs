@@ -28,14 +28,8 @@ namespace Grid
         private void Loop_Tick(object sender, EventArgs e)
         {
             //Draws all our cells
-            visualManager.Render();
-
-        }
-
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
-        {
-            //Checks if we clicked a cell
-            visualManager.ClickCell(this.PointToClient(Cursor.Position));
+            visualManager.GameLoop();
+            
         }
     }
 }

@@ -8,75 +8,48 @@ using System.Threading.Tasks;
 
 namespace Grid
 {
-
-
     class GridManager
     {
-        //Handeling of graphics
         private BufferedGraphics backBuffer;
         private Graphics dc;
         private Rectangle displayRectangle;
 
-        /// <summary>
-        /// Amount of rows in the grid
-        /// </summary>
         private int cellRowCount;
 
-        /// <summary>
-        /// This list contains all cells
-        /// </summary>
         private List<Cell> grid;
 
-        /// <summary>
-        /// The current click type
-        /// </summary>
         private CellType clickType;
 
         public GridManager(Graphics dc, Rectangle displayRectangle)
         {
-            //Create's (Allocates) a buffer in memory with the size of the display
             this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
-
-            //Sets the graphics context to the graphics in the buffer
             this.dc = backBuffer.Graphics;
-
-            //Sets the displayRectangle
             this.displayRectangle = displayRectangle;
 
-            //Sets the row count to then, this will create a 10 by 10 grid.
             cellRowCount = 10;
 
-            CreateGrid();
+            SetupWorld();
         }
 
-        /// <summary>
-        /// Renders all the cells
-        /// </summary>
         public void Render()
         {
-            dc.Clear(Color.White);
+
+            dc.Clear(Color.Green);
 
             foreach (Cell cell in grid)
             {
                 cell.Render(dc);
             }
 
-            //Renders the content of the buffered graphics context to the real context(Swap buffers)
             backBuffer.Render();
         }
 
-        /// <summary>
-        /// Creates the grid
-        /// </summary>
         public void CreateGrid()
         {
-            //Instantiates the list of cells
             grid = new List<Cell>();
 
-            //Sets the cell size
             int cellSize = displayRectangle.Width / cellRowCount;
 
-            //Creates all the cells
             for (int x = 0; x < cellRowCount; x++)
             {
                 for (int y = 0; y < cellRowCount; y++)
@@ -86,19 +59,80 @@ namespace Grid
             }
         }
 
-        /// <summary>
-        /// If the mouse clicks on a cell
-        /// </summary>
-        /// <param name="mousePos"></param>
-        public void ClickCell(Point mousePos)
+
+        public void GameLoop()
         {
-            foreach (Cell cell in grid) //Finds the cell that we just clicked
-            {
-                if (cell.BoundingRectangle.IntersectsWith(new Rectangle(mousePos, new Size(1, 1))))
-                {
-                    cell.Click(ref clickType);
-                }
-            }
+            Render();
+
+        }
+
+        public void SetupWorld()
+        {
+            CreateGrid();
+            SetUpCells();
+
+
+        }
+
+        private void SetUpCells()
+        {
+            List<Cell> emptylist = new List<Cell>();
+
+            //Creates the portal
+            Cell portal = grid.Find(node => node.Position.X == 0 && node.Position.Y == 8);
+            portal.MyType = CellType.PORTAL;
+            portal.Walkable = true;
+            portal.Sprite = Image.FromFile(@"Images\Portal.png");
+
+
+            
+            //Creates the ice tower
+            //Cell iceTower = grid.Find(node => node.Position.X == 8 && node.Position.Y == 7);
+            //iceTower.MyType = CellType.ICE;
+            //iceTower.Walkable = false;
+            //iceTower.Sprite = Image.FromFile(@"Images\Ice_Castle.png");
+
+            //Creates the storm tower
+            //Cell stormTower = grid.Find(node => node.Position.X == 2 && node.Position.Y == 4);
+            //stormTower.MyType = CellType.STORM;
+            //stormTower.Walkable = false;
+            //stormTower.Sprite = Image.FromFile(@"Images\Lighting_Castle.png");
+
+            //Creates the Rocks
+            //for (int x = 4; x < 7; x++)
+            //{
+            //    for (int y = 1; y < 7; y++)
+            //    {
+            //        Cell wall = grid.Find(node => node.Position.X == x && node.Position.Y == y);
+
+            //        if (wall.MyType != CellType.WALL)
+            //        {
+            //            wall.MyType = CellType.WALL;
+            //            wall.Walkable = false;
+            //            wall.Sprite = Image.FromFile(@"Images\Rock.png");
+            //        }
+            //    }
+            //}
+
+            //Creates the trees
+            //for (int forestX = 2; forestX < 7; forestX++)
+            //{
+            //    for (int forestY = 7; forestY < 10; forestY++)
+            //    {
+            //        if (forestY == 7 || forestY == 9)
+            //        {
+            //            Cell forest = grid.Find(node => node.Position.X == forestX && node.Position.Y == forestY);
+
+            //            if (forest.MyType != CellType.FOREST)
+            //            {
+            //                forest.MyType = CellType.FOREST;
+            //                forest.Walkable = false;
+            //                forest.Sprite = Image.FromFile(@"Images\ForestPath.png");
+            //            }
+
+            //        }
+            //    }
+            //}
         }
     }
 }

@@ -217,5 +217,23 @@ namespace Grid
         #endregion
 
 
+        List<Cell> openList;
+        List<Cell> closedList;
+        public Cell Position { get { return Position; } set { Position = value; } }
+
+        public Wizard(Cell startPosition)
+        {
+            this.Position = startPosition;
+        }
+
+        public void Astar(Cell start, Cell goal)
+        {
+            openList = new List<Cell>();
+            closedList = new List<Cell>();
+
+            start = Position;
+
+
+        }
     }
 }

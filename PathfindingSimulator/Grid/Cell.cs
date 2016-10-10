@@ -8,38 +8,71 @@ using static Grid.CellType;
 
 namespace Grid
 {
-    enum CellType { START, GOAL, WALL, EMPTY };
+    enum CellType { EMPTY, PORTAL, STORM, ICE, FOREST, WALL, STORMKEY, ICEKEY, PATH, FORESTPATH }
 
     class Cell
     {
-        /// <summary>
-        /// The grid position of the cell
-        /// </summary>
-        public Point position;
 
-        /// <summary>
-        /// The size of the cell
-        /// </summary>
+        private Point position;
+        
         private int cellSize;
-
-        /// <summary>
-        /// The cell's sprite
-        /// </summary>
+        
         private Image sprite;
-
-        /// <summary>
-        /// Sets the celltype to empty as default
-        /// </summary>
+        
         CellType myType = EMPTY;
 
-        /// <summary>
-        /// The bounding rectangle of the cell
-        /// </summary>
+        private bool walkable;
+        
+
         public Rectangle BoundingRectangle
         {
             get
             {
                 return new Rectangle(position.X * cellSize, position.Y * cellSize, cellSize, cellSize);
+            }
+        }
+
+        public CellType MyType
+        {
+            get { return myType; }
+            set { myType = value; }
+        }
+        public Point Position
+        {
+            get
+            {
+                return position;
+            }
+
+            set
+            {
+                position = value;
+            }
+        }
+
+        public bool Walkable
+        {
+            get
+            {
+                return walkable;
+            }
+
+            set
+            {
+                walkable = value;
+            }
+        }
+
+        public Image Sprite
+        {
+            get
+            {
+                return sprite;
+            }
+
+            set
+            {
+                sprite = value;
             }
         }
 
@@ -79,36 +112,6 @@ namespace Grid
 
             //Write's the cells grid position
             dc.DrawString(string.Format("{0}", position), new Font("Arial", 7, FontStyle.Regular), new SolidBrush(Color.Black), position.X * cellSize, (position.Y * cellSize) + 10);
-        }
-
-        /// <summary>
-        /// Clicks the cell
-        /// </summary>
-        /// <param name="clickType">The click type</param>
-        public void Click(ref CellType clickType)
-        {
-            if (clickType == START) //If the click type is START
-            {
-                sprite = Image.FromFile(@"Images\Start.png");
-                myType = clickType;
-                clickType = GOAL;
-            }
-            else if (clickType == GOAL && myType != START) //If the click type is GOAL
-            {
-                sprite = Image.FromFile(@"Images\Goal.png");
-                clickType = WALL;
-                myType = GOAL;
-            }
-            else if (clickType == WALL && myType != START && myType != GOAL && myType != WALL) //If the click type is WALL
-            {
-                sprite = Image.FromFile(@"Images\Wall.png");
-                myType = WALL;
-            }
-            else if (clickType == WALL && myType == WALL) //If the click type is WALL
-            {
-                sprite = null;
-                myType = EMPTY;
-            }
         }
     }
 }
