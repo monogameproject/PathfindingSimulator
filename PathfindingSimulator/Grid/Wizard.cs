@@ -24,6 +24,7 @@ namespace Grid
         {
             this.Position = startPosition;
             this.wizardPosition = startPosition.Position;
+
         }
 
         public void Render(Graphics dc)
@@ -39,7 +40,13 @@ namespace Grid
             closedList = new List<Cell>();
 
             start = Position;
+            openList.Add(start);
 
+            start.CalculateF(goal);
+            while (openList.Count() == 0)
+            {
+
+            }
         }
     }
 }

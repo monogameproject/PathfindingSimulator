@@ -22,7 +22,10 @@ namespace Grid
         CellType myType = EMPTY;
 
         private bool walkable;
-        
+
+        private int f, g, h;
+
+        private Cell parent;
 
         public Rectangle BoundingRectangle
         {
@@ -31,7 +34,18 @@ namespace Grid
                 return new Rectangle(position.X * cellSize, position.Y * cellSize, cellSize, cellSize);
             }
         }
+        public Cell Parent
+        {
+            get
+            {
+                return parent;
+            }
 
+            set
+            {
+                parent = value;
+            }
+        }
         public CellType MyType
         {
             get { return myType; }
@@ -76,6 +90,45 @@ namespace Grid
             }
         }
 
+        public int F
+        {
+            get
+            {
+                return f;
+            }
+
+            set
+            {
+                f = value;
+            }
+        }
+
+        public int G
+        {
+            get
+            {
+                return g;
+            }
+
+            set
+            {
+                g = value;
+            }
+        }
+
+        public int H
+        {
+            get
+            {
+                return h;
+            }
+
+            set
+            {
+                h = value;
+            }
+        }
+
         /// <summary>
         /// The cell's constructor
         /// </summary>
@@ -83,11 +136,10 @@ namespace Grid
         /// <param name="size">The cell's size</param>
         public Cell(Point position, int size)
         {
-            //Sets the position
             this.position = position;
 
-            //Sets the cell size
             this.cellSize = size;
+            parent = this;
 
         }
 
@@ -97,21 +149,48 @@ namespace Grid
         /// <param name="dc">The graphic context</param>
         public void Render(Graphics dc)
         {
-            //Draws the rectangles color
             dc.FillRectangle(new SolidBrush(Color.White), BoundingRectangle);
 
-            //Draws the rectangles border
             dc.DrawRectangle(new Pen(Color.Black), BoundingRectangle);
 
-            //If the cell has a sprite, then we need to draw it
             if (sprite != null)
             {
                 dc.DrawImage(sprite, BoundingRectangle);
             }
 
 
-            //Write's the cells grid position
+#if DEBUG
             dc.DrawString(string.Format("{0}", position), new Font("Arial", 7, FontStyle.Regular), new SolidBrush(Color.Black), position.X * cellSize, (position.Y * cellSize) + 10);
+            dc.DrawString(string.Format("F {0} \nG {1} \nH {2}", f, g, h, parent.Position), new Font("Arial", 7, FontStyle.Regular), new SolidBrush(Color.Red), position.X * cellSize, (position.Y * cellSize) + 20);
+
+#endif
+        }
+
+        public int CalculateF(Cell goal)
+        {
+            //g
+            Point diff = new Point(position.X - Parent.Position.X, position.Y - Parent.Position.Y);
+
+            if (Math.Abs(diff.X) == 1 && Math.Abs(diff.Y) == 1)
+            {
+                g = Parent.G + 14;
+            }
+            else if (diff.X == 0 && diff.Y == 0)
+            {
+                g = Parent.G + 0;
+            }
+            else
+            {
+                g = Parent.G + 10;
+            }
+
+            //h
+            diff = new Point(Math.Abs(goal.Position.X - position.X), Math.Abs(goal.Position.Y - position.Y));
+            h = (diff.X + diff.Y) * 10;
+
+            //f
+            f = g + h;
+            return f;
         }
     }
 }
