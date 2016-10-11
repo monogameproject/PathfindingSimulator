@@ -26,6 +26,18 @@ namespace Grid
             set { wizard = value; }
         }
 
+        public GridManager(Graphics dc, Rectangle displayRectangle, int BFS)
+        {
+            this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
+            this.dc = backBuffer.Graphics;
+            this.displayRectangle = displayRectangle;
+
+            cellRowCount = 10;
+
+            SetupWorld();
+            AddCellEdges();
+        }
+
         public GridManager(Graphics dc, Rectangle displayRectangle)
         {
             this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
@@ -69,6 +81,41 @@ namespace Grid
             }
         }
 
+        public void AddCellEdges()
+        {
+            for (int i = 0; i < grid.Count; i++)
+            {
+                if(grid[i].Walkable == true)
+                {
+                    if(i-1 >= 0)
+                    {
+                        if (i != 10 && i != 20 && i != 30 && i != 40 && i != 50 && i != 60 && i != 70 && i != 80 && i != 90)
+                        {
+                            grid[i - 1].AddEdge(grid[i]);
+                        }
+                        if (i - cellRowCount >= 0)
+                        {
+                            grid[i - cellRowCount].AddEdge(grid[i]);
+                        }
+                    }
+                    if(i+2 <= grid.Count)
+                    {
+                        if (i != 9 && i != 19 && i != 29 && i != 39 && i != 49 && i != 59 && i != 69 && i != 79 && i != 89)
+                        {
+                            grid[i + 1].AddEdge(grid[i]);
+                        }
+                        if (i + (cellRowCount + 1) <= grid.Count)
+                        {
+                            grid[i + (cellRowCount)].AddEdge(grid[i]);
+                        }
+                    }
+                    if(i == 99)
+                    {
+                        i = 99;
+                    }
+                }
+            }
+        }
 
         public void GameLoop()
         {
