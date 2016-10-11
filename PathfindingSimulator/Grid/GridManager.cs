@@ -10,6 +10,7 @@ namespace Grid
 {
     class GridManager
     {
+        //TEst
         private BufferedGraphics backBuffer;
         private Graphics dc;
         private Rectangle displayRectangle;
