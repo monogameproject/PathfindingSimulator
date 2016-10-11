@@ -27,6 +27,8 @@ namespace Grid
 
         private Cell parent;
 
+        private List<Edge> myEdges = new List<Edge>();
+
         public Rectangle BoundingRectangle
         {
             get
@@ -129,6 +131,19 @@ namespace Grid
             }
         }
 
+        public List<Edge> MyEdges
+        {
+            get
+            {
+                return myEdges;
+            }
+
+            set
+            {
+                myEdges = value;
+            }
+        }
+
         /// <summary>
         /// The cell's constructor
         /// </summary>
@@ -199,6 +214,10 @@ namespace Grid
                 return f;
             }
             return f;
+        }
+        public void AddEdge(Cell Other)
+        {
+            myEdges.Add(new Edge(this, Other));
         }
     }
 }
