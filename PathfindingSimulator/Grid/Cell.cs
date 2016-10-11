@@ -14,11 +14,11 @@ namespace Grid
     {
 
         private Point position;
-        
+
         private int cellSize;
-        
+
         private Image sprite;
-        
+
         CellType myType = EMPTY;
 
         private bool walkable;
@@ -166,20 +166,20 @@ namespace Grid
 #endif
         }
 
-        public int CalculateF(Cell goal)
+        public int Calculate(Cell goal, string choice)
         {
             //g
             Point diff = new Point(position.X - Parent.Position.X, position.Y - Parent.Position.Y);
 
-            if (Math.Abs(diff.X) == 1 && Math.Abs(diff.Y) == 1)
+            if (Math.Abs(diff.X) == 1 && Math.Abs(diff.Y) == 1 && choice == "g")
             {
                 g = Parent.G + 14;
             }
-            else if (diff.X == 0 && diff.Y == 0)
+            else if (diff.X == 0 && diff.Y == 0 && choice == "g")
             {
                 g = Parent.G + 0;
             }
-            else
+            else if (choice == "g")
             {
                 g = Parent.G + 10;
             }
@@ -187,9 +187,17 @@ namespace Grid
             //h
             diff = new Point(Math.Abs(goal.Position.X - position.X), Math.Abs(goal.Position.Y - position.Y));
             h = (diff.X + diff.Y) * 10;
+            if (choice == "h")
+            {
+                return h;
+            }
 
             //f
             f = g + h;
+            if (choice == "f")
+            {
+                return f;
+            }
             return f;
         }
     }

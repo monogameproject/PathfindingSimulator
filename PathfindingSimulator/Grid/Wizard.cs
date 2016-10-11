@@ -24,7 +24,6 @@ namespace Grid
         {
             this.Position = startPosition;
             this.wizardPosition = startPosition.Position;
-
         }
 
         public void Render(Graphics dc)
@@ -42,9 +41,41 @@ namespace Grid
             start = Position;
             openList.Add(start);
 
-            start.CalculateF(goal);
-            while (openList.Count() == 0)
+            start.Calculate(goal, "f");
+            while (openList.Count() != 0)
             {
+                foreach (Cell item in GridManager.Grid)
+                {
+                    //Adds horizontal and vertical neighbours
+                    if (start.Position.X + 1 == item.Position.X || start.Position.X - 1 == item.Position.X || start.Position.Y + 1 == item.Position.Y || start.Position.Y - 1 == item.Position.Y)
+                    {
+                        if (item.Walkable)
+                        {
+                            openList.Add(item);
+                            item.Parent.Position = start.Position;
+                        }
+                    }
+                    else if (start.Position.X - 1 == item.Position.X && start.Position.Y - 1 == item.Position.Y || start.Position.X + 1 == item.Position.X && start.Position.Y + 1 == item.Position.Y || start.Position.X - 1 == item.Position.X && start.Position.Y + 1 == item.Position.Y || start.Position.X + 1 == item.Position.X && start.Position.Y - 1 == item.Position.Y)
+                    {
+                        if (item.Walkable)
+                        {
+                            openList.Add(item);
+                            item.Parent.Position = start.Position;
+                        }
+                    }
+                }
+                foreach (Cell item in openList)
+                {
+                    if (item.MyType == CellType.STORMKEY) //Set goal
+                    {
+                        
+                    }
+                    openList.Remove(Position);
+                    closedList.Add(Position);
+                    item.Calculate(goal, "g");
+                    item.Calculate(goal, "h");
+                    item.Calculate(goal, "f");
+                }
 
             }
         }

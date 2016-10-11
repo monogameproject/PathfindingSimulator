@@ -11,11 +11,11 @@ namespace Grid
     class GridManager
     {
         private BufferedGraphics backBuffer;
-        private Graphics dc;
+        public  Graphics dc;
         private Rectangle displayRectangle;
         private int cellRowCount;
         private int cellSize;
-        private List<Cell> grid;
+        private static List<Cell> grid;
         private Wizard wizard;
         private Cell wStartCell = null;
 
@@ -25,10 +25,23 @@ namespace Grid
             set { wizard = value; }
         }
 
+        public static List<Cell> Grid
+        {
+            get
+            {
+                return grid;
+            }
+
+            set
+            {
+                grid = value;
+            }
+        }
+
         public GridManager(Graphics dc, Rectangle displayRectangle)
         {
             this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
-            this.dc = backBuffer.Graphics;
+           this.dc = backBuffer.Graphics;
             this.displayRectangle = displayRectangle;
 
             cellRowCount = 10;
@@ -51,6 +64,7 @@ namespace Grid
             }
             wizard.Render(dc);
             backBuffer.Render();
+            
         }
 
         public void CreateGrid()

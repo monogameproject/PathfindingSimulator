@@ -12,8 +12,9 @@ namespace Grid
 {
     public partial class Form1 : Form
     {
+       
         private GridManager visualManager;
-
+       
         public Form1()
         {
             InitializeComponent();
@@ -23,6 +24,7 @@ namespace Grid
 
             //Instantiates the visual manager
             visualManager = new GridManager(CreateGraphics(), this.DisplayRectangle);
+
         }
 
         private void Loop_Tick(object sender, EventArgs e)
