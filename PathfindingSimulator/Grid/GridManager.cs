@@ -16,7 +16,7 @@ namespace Grid
         private Rectangle displayRectangle;
         private int cellRowCount;
         private int cellSize;
-        private List<Cell> grid;
+        private static List<Cell> grid;
         private Wizard wizard;
         private Cell wStartCell = null;
 
@@ -25,7 +25,18 @@ namespace Grid
             get { return wizard; }
             set { wizard = value; }
         }
+        public static List<Cell> Grid
+        {
+            get
+            {
+                return grid;
+            }
 
+            set
+            {
+                grid = value;
+            }
+        }
         public GridManager(Graphics dc, Rectangle displayRectangle, int BFS)
         {
             this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
