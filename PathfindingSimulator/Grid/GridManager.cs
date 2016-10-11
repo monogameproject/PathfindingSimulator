@@ -17,14 +17,9 @@ namespace Grid
         private int cellRowCount;
         private int cellSize;
         private static List<Cell> grid;
-        private Wizard wizard;
         private Cell wStartCell = null;
 
-        public Wizard Wizard
-        {
-            get { return wizard; }
-            set { wizard = value; }
-        }
+        
 
         public static List<Cell> Grid
         {
@@ -36,6 +31,19 @@ namespace Grid
             set
             {
                 grid = value;
+            }
+        }
+
+        public Cell WStartCell
+        {
+            get
+            {
+                return wStartCell;
+            }
+
+            set
+            {
+                wStartCell = value;
             }
         }
 
@@ -63,7 +71,6 @@ namespace Grid
                     cell.Sprite = Image.FromFile(@"Images\Grass.png");
                 }
             }
-            wizard.Render(dc);
             backBuffer.Render();
             
         }
@@ -254,7 +261,6 @@ namespace Grid
 
             }
            
-            wizard = new Wizard(wStartCell);
             
 
             Random rnd = new Random();

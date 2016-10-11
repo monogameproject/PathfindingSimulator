@@ -47,37 +47,88 @@ namespace Grid
                 foreach (Cell item in GridManager.Grid)
                 {
                     //Adds horizontal and vertical neighbours
-                    if (start.Position.X + 1 == item.Position.X || start.Position.X - 1 == item.Position.X || start.Position.Y + 1 == item.Position.Y || start.Position.Y - 1 == item.Position.Y)
+                    if (start.Position.X + 1 == item.Position.X && start.Position.Y == item.Position.Y || start.Position.X - 1 == item.Position.X && start.Position.Y == item.Position.Y || start.Position.Y + 1 == item.Position.Y && start.Position.X == item.Position.X || start.Position.Y - 1 == item.Position.Y && start.Position.X == item.Position.X)
                     {
                         if (item.Walkable)
                         {
                             openList.Add(item);
-                            item.Parent.Position = start.Position;
+                            item.Parent = start;
+                            if (item.Calculate(goal, "f") < item.Calculate(goal, "h"))
+                            {
+                                closedList.Add(item.Parent);
+                                Position = item.Parent;
+                            }
                         }
                     }
-                    else if (start.Position.X - 1 == item.Position.X && start.Position.Y - 1 == item.Position.Y || start.Position.X + 1 == item.Position.X && start.Position.Y + 1 == item.Position.Y || start.Position.X - 1 == item.Position.X && start.Position.Y + 1 == item.Position.Y || start.Position.X + 1 == item.Position.X && start.Position.Y - 1 == item.Position.Y)
+                    //Finds diagonal neighbours
+                    if (start.Position.X - 1 == item.Position.X && start.Position.Y - 1 == item.Position.Y || start.Position.X + 1 == item.Position.X && start.Position.Y + 1 == item.Position.Y || start.Position.X - 1 == item.Position.X && start.Position.Y + 1 == item.Position.Y || start.Position.X + 1 == item.Position.X && start.Position.Y - 1 == item.Position.Y)
                     {
                         if (item.Walkable)
                         {
                             openList.Add(item);
-                            item.Parent.Position = start.Position;
+                            item.Parent = start;
+                            if (item.Calculate(goal, "f") < item.Calculate(goal, "h"))
+                            {
+                                closedList.Add(item.Parent);
+                                Position = item.Parent;
+                            }
                         }
                     }
                 }
                 foreach (Cell item in openList)
                 {
-                    if (item.MyType == CellType.STORMKEY) //Set goal
+                    if (item == SetGoal(STORMKEY)) //Set goal
                     {
-                        
+                        SetGoal(STORMKEY);
                     }
-                    openList.Remove(Position);
                     closedList.Add(Position);
                     item.Calculate(goal, "g");
                     item.Calculate(goal, "h");
                     item.Calculate(goal, "f");
                 }
 
+                    openList.Remove(Position);
             }
+        }
+
+        public Cell SetGoal(CellType cellType)
+        {
+            Cell test;
+            switch (cellType)
+            {
+                case STORMKEY:
+                    foreach (Cell item in GridManager.Grid)
+                    {
+                        if (item.MyType == CellType.STORMKEY)
+                        {
+                            cellType = CellType.STORM;
+                            return test = item;
+                        }
+                    }
+                    break;
+                case STORM:
+                    foreach (Cell item in GridManager.Grid)
+                    {
+                        if (item.MyType == CellType.STORM)
+                        {
+                            cellType = CellType.ICEKEY;
+                            return test = item;
+                        }
+                    }
+                    break;
+                case ICEKEY:
+                    foreach (Cell item in GridManager.Grid)
+                    {
+                        if (item.MyType == CellType.ICEKEY)
+                        {
+                            cellType = CellType.ICE;
+                            return test = item;
+                        }
+                    }
+                    break;
+
+            }
+            return test = new Cell(new Point(0,0), 80);
         }
     }
 }
