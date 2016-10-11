@@ -12,7 +12,7 @@ namespace Grid
     {
         //TEst
         private BufferedGraphics backBuffer;
-        private Graphics dc;
+        public  Graphics dc;
         private Rectangle displayRectangle;
         private int cellRowCount;
         private int cellSize;
@@ -49,10 +49,23 @@ namespace Grid
             AddCellEdges();
         }
 
+        public static List<Cell> Grid
+        {
+            get
+            {
+                return grid;
+            }
+
+            set
+            {
+                grid = value;
+            }
+        }
+
         public GridManager(Graphics dc, Rectangle displayRectangle)
         {
             this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
-            this.dc = backBuffer.Graphics;
+           this.dc = backBuffer.Graphics;
             this.displayRectangle = displayRectangle;
 
             cellRowCount = 10;
@@ -75,6 +88,7 @@ namespace Grid
             }
             wizard.Render(dc);
             backBuffer.Render();
+            
         }
 
         public void CreateGrid()
