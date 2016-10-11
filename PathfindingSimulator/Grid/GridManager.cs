@@ -49,19 +49,6 @@ namespace Grid
             AddCellEdges();
         }
 
-        public static List<Cell> Grid
-        {
-            get
-            {
-                return grid;
-            }
-
-            set
-            {
-                grid = value;
-            }
-        }
-
         public GridManager(Graphics dc, Rectangle displayRectangle)
         {
             this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
