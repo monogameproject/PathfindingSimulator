@@ -15,6 +15,8 @@ namespace Grid
 
         private Point position;
 
+        public bool Visited = false;
+
         private int cellSize;
 
         private Image sprite;
