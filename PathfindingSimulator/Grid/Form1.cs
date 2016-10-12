@@ -12,9 +12,7 @@ namespace Grid
 {
     public partial class Form1 : Form
     {
-        private BufferedGraphics backBuffer;
-        public Graphics dc;
-        private Rectangle displayRectangle;
+        
 
         private GridManager visualManager;
 
@@ -28,20 +26,15 @@ namespace Grid
             ClientSize = new Size(800, 800);
 
             //Instantiates the visual manager
-            visualManager = new GridManager(CreateGraphics(), this.DisplayRectangle);
-            this.backBuffer = BufferedGraphicsManager.Current.Allocate(dc, displayRectangle);
-            this.dc = backBuffer.Graphics;
-            this.displayRectangle = DisplayRectangle;
+            visualManager = new GridManager(CreateGraphics(), this.DisplayRectangle, 1);
+            
 
-            wizard = new Wizard(visualManager.WStartCell);
         }
 
         private void Loop_Tick(object sender, EventArgs e)
         {
             //Draws all our cells
             visualManager.GameLoop();
-            wizard.Render(dc);
-            wizard.Astar(visualManager.WStartCell, wizard.SetGoal(CellType.STORMKEY));
         }
     }
 }

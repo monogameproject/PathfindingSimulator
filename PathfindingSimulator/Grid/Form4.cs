@@ -12,7 +12,7 @@ namespace Grid
 {
     public partial class Form4 : Form
     {
-
+        
         private GridManager visualManager;
 
         public Form4()
@@ -23,7 +23,7 @@ namespace Grid
             ClientSize = new Size(800, 800);
 
             //Instantiates the visual manager
-            visualManager = new GridManager(CreateGraphics(), this.DisplayRectangle);
+            visualManager = new GridManager(CreateGraphics(), this.DisplayRectangle, 3);
         }
 
         private void Form4_Load(object sender, EventArgs e)
