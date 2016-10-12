@@ -13,15 +13,20 @@ namespace Grid
 
         }
 
-        public Cell RunBFS(List<Cell> grid, Cell goal)
+        public Cell RunBFS(List<Cell> grid, Cell goal, Cell Start)
         {
             //Queue that contains all edges
             Queue<Edge> queue = new Queue<Edge>();
+            foreach (Cell c in grid)
+            {
+                if(c == Start)
+                {
+                    //The starting node(Entrance, points at itself)
+                    queue.Enqueue(new Edge(c, c));
+                    c.Visited = true; //Sets the starting node as visited(we assume that index 0 is Entrance)
+                }
+            }
 
-            //The starting node(Entrance, points at itself)
-            queue.Enqueue(new Edge(grid[0], grid[0]));
-
-            grid[0].Visited = true; //Sets the starting node as visited(we assume that index 0 is Entrance)
 
             while (queue.Count > 0) //As long as the queue contains edges (we still have edges to explorer)
             {

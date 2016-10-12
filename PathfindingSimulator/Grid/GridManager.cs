@@ -19,6 +19,8 @@ namespace Grid
         private static List<Cell> grid;
         private Wizard wizard;
         private Cell wStartCell = null;
+        private BFS bfs;
+        private Cell goal;
 
         public Wizard Wizard
         {
@@ -49,7 +51,14 @@ namespace Grid
             cellRowCount = 10;
 
             SetupWorld();
-            AddCellEdges();
+            foreach (Cell c in grid)
+            {
+                if(c.MyType == CellType.STORMKEY)
+                {
+                    goal = c;
+                }
+            }
+            ChooseAlgorithm();
         }
 
         
@@ -312,18 +321,21 @@ namespace Grid
 
         public void ChooseAlgorithm()
         {
-            //switch (algorithm)
-            //{
-            //    case 1:
-            //        wizard.Astar(wStartCell, storm)
-            //        break;
-            //    case 2:
-            //        break;
-            //    case 3:
-            //        break;
-            //    default:
-            //        break;
-            //}
+            switch (algorithm)
+            {
+                case 1:
+                    break;
+                case 2:
+                    AddCellEdges();
+                    bfs = new BFS();
+                    Cell endGoal = bfs.RunBFS(grid, goal, wStartCell);
+                    List<Cell> path = bfs.TrackPath(endGoal, wStartCell);
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
