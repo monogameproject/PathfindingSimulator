@@ -23,7 +23,7 @@ namespace Grid
                 {
                     //The starting node(Entrance, points at itself)
                     queue.Enqueue(new Edge(c, c));
-                    c.Visited = true; //Sets the starting node as visited(we assume that index 0 is Entrance)
+                    c.Visited = true; //Sets the starting node as visited
                 }
             }
 
@@ -35,7 +35,6 @@ namespace Grid
                 if (currentEdge.To.Equals(goal)) //Checks if the current edge leads to the goal
                 {
                     return currentEdge.To;
-
                 }
                 foreach (Edge edge in currentEdge.To.MyEdges) //Examines all the edges on the currenEdge's endNode
                 {

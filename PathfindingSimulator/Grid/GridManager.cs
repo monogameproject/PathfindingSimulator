@@ -16,20 +16,23 @@ namespace Grid
         private Rectangle displayRectangle;
         private int cellRowCount;
         private int cellSize;
-        private static List<Cell> grid;
+        private List<Cell> grid;
         private List<Cell> path = new List<Cell>();
         private Wizard wizard;
         private Cell wStartCell = null;
         private BFS bfs;
         private DFS dfs;
         private Cell goal;
+        int currentTileOnPath = 0;
+        bool change = false;
+        Queue<Cell> goalQueue = new Queue<Cell>();
 
         public Wizard Wizard
         {
             get { return wizard; }
             set { wizard = value; }
         }
-        public static List<Cell> Grid
+        public List<Cell> Grid
         {
             get
             {
@@ -57,7 +60,28 @@ namespace Grid
             {
                 if(c.MyType == CellType.STORMKEY)
                 {
-                    goal = c;
+                    goalQueue.Enqueue(c);
+                }
+            }
+            foreach (Cell c in grid)
+            {
+                if (c.MyType == CellType.STORM)
+                {
+                    goalQueue.Enqueue(c);
+                }
+            }
+            foreach (Cell c in grid)
+            {
+                if (c.MyType == CellType.ICEKEY)
+                {
+                    goalQueue.Enqueue(c);
+                }
+            }
+            foreach (Cell c in grid)
+            {
+                if (c.MyType == CellType.ICE)
+                {
+                    goalQueue.Enqueue(c);
                 }
             }
             ChooseAlgorithm();
@@ -126,17 +150,31 @@ namespace Grid
                             grid[i + (cellRowCount)].AddEdge(grid[i]);
                         }
                     }
-                    if(i == 99)
-                    {
-                        i = 99;
-                    }
                 }
             }
         }
 
         public void GameLoop()
         {
-
+            
+            if(currentTileOnPath < path.Count)
+            {
+                if (path[currentTileOnPath] == grid[68] && change == false)
+                {
+                    grid[68].MyEdges.Clear();
+                    grid[68].Sprite = Image.FromFile(@"Images\Monster.png");
+                    grid[68].Walkable = false;
+                    change = true;
+                }
+                wizard.Move(path[currentTileOnPath]);
+                currentTileOnPath++;
+            }
+            else
+            {
+                wizard.Position = goal;
+                currentTileOnPath = 0;
+                ChooseAlgorithm();
+            }
             Render();
         }
 
@@ -161,13 +199,13 @@ namespace Grid
             //Creates the ice tower
             Cell iceTower = grid.Find(node => node.Position.X == 8 && node.Position.Y == 7);
             iceTower.MyType = CellType.ICE;
-            iceTower.Walkable = false;
+            iceTower.Walkable = true;
             iceTower.Sprite = Image.FromFile(@"Images\IceTower.png");
 
             //Creates the storm tower
             Cell stormTower = grid.Find(node => node.Position.X == 2 && node.Position.Y == 4);
             stormTower.MyType = CellType.STORM;
-            stormTower.Walkable = false;
+            stormTower.Walkable = true;
             stormTower.Sprite = Image.FromFile(@"Images\StormTower.png");
 
             //Creates the Rocks
@@ -323,24 +361,45 @@ namespace Grid
 
         public void ChooseAlgorithm()
         {
-            switch (algorithm)
+            if(goalQueue.Count != 0)
             {
-                case 1:
-                    break;
-                case 2:
-                    AddCellEdges();
-                    bfs = new BFS();
-                    Cell endGoal = bfs.RunBFS(grid, goal, wStartCell);
-                    path = bfs.TrackPath(endGoal, wStartCell);
-                    break;
-                case 3:
-                    AddCellEdges();
-                    dfs = new DFS();
-                    Cell endgoal = dfs.RunDFS(grid, goal, wStartCell);
-                     path = dfs.TrackPath(endgoal, wStartCell);
-                    break;
-                default:
-                    break;
+                goal = goalQueue.Dequeue();
+
+                switch (algorithm)
+                {
+                    case 1:
+                        break;
+                    case 2:
+                        foreach (Cell c in grid)
+                        {
+                            c.MyEdges.Clear();
+                            c.Visited = false;
+                        }
+                        AddCellEdges();
+                        bfs = new BFS();
+                        Cell endGoal = bfs.RunBFS(grid, goal, wizard.Position);
+                        path = bfs.TrackPath(endGoal, wizard.Position);
+                        
+                        
+                        break;
+                    case 3:
+                        foreach (Cell c in grid)
+                        {
+                            c.MyEdges.Clear();
+                            c.Visited = false;
+                        }
+                        AddCellEdges();
+                        dfs = new DFS();
+                        Cell endgoal = dfs.RunDFS(grid, goal, wizard.Position);
+                        path = dfs.TrackPath(endgoal, wizard.Position);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+              
             }
         }
     }
