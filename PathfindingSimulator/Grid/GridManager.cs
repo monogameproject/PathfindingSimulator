@@ -133,7 +133,7 @@ namespace Grid
         {
             CreateGrid();
             SetUpCells();
-
+            ChooseAlgorithm();
 
         }
 
@@ -285,7 +285,7 @@ namespace Grid
                     item.Walkable = true;
                     item.Sprite = Image.FromFile(@"Images\DarkDirt.png");
                 }
-                if (item.Position == new Point(1, 8))
+                if (item.Position == new Point(1, 1))
                 {
                     wStartCell = item;
                 }
@@ -312,18 +312,18 @@ namespace Grid
 
         public void ChooseAlgorithm()
         {
-            //switch (algorithm)
-            //{
-            //    case 1:
-            //        wizard.Astar(wStartCell, storm)
-            //        break;
-            //    case 2:
-            //        break;
-            //    case 3:
-            //        break;
-            //    default:
-            //        break;
-            //}
+            switch (algorithm)
+            {
+                case 1:
+                    wizard.ClausAstar(wStartCell);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
