@@ -17,9 +17,11 @@ namespace Grid
         private int cellRowCount;
         private int cellSize;
         private static List<Cell> grid;
+        private List<Cell> path = new List<Cell>();
         private Wizard wizard;
         private Cell wStartCell = null;
         private BFS bfs;
+        private DFS dfs;
         private Cell goal;
 
         public Wizard Wizard
@@ -329,9 +331,13 @@ namespace Grid
                     AddCellEdges();
                     bfs = new BFS();
                     Cell endGoal = bfs.RunBFS(grid, goal, wStartCell);
-                    List<Cell> path = bfs.TrackPath(endGoal, wStartCell);
+                    path = bfs.TrackPath(endGoal, wStartCell);
                     break;
                 case 3:
+                    AddCellEdges();
+                    dfs = new DFS();
+                    Cell endgoal = dfs.RunDFS(grid, goal, wStartCell);
+                     path = dfs.TrackPath(endgoal, wStartCell);
                     break;
                 default:
                     break;
