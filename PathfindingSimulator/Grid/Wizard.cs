@@ -13,6 +13,7 @@ namespace Grid
         private bool isDone = false;
         List<Cell> openList;
         List<Cell> closedList;
+       private static List<Cell> aStarPath= new List<Cell>();
         Point wizardPosition;
         private Cell position;
         public Cell Position
@@ -42,48 +43,49 @@ namespace Grid
         }
 
 
-        public Cell Goals(CellType celltype)
+        
+        public List<Cell> ClausAstar(Cell start, Cell target)
         {
-            foreach (Cell item in GridManager.Grid)
-            {
-                if (item.MyType == celltype)
-                {
-                    return item;
-                }
-            }
-            return null;
-        }
-        public void ClausAstar()
-        {
-            Queue<Cell> goal = new Queue<Cell>();
-            goal.Enqueue(Goals(STORMKEY));
-            goal.Enqueue(Goals(STORM));
-            goal.Enqueue(Goals(ICEKEY));
-            goal.Enqueue(Goals(ICE));
+            
 
             openList = new List<Cell>();
             closedList = new List<Cell>();
 
-            Cell start = position;
+            //start = position;
 
             openList.Add(start);
             while (openList.Count > 0)
             {
                 Cell q = position;
-                foreach (Cell cell in openList) // runs through our open list
+
+                if (q.MyType == target.MyType)
                 {
-                    if (cell.Calculate(goal.ElementAt(0)) < q.Calculate(goal.ElementAt(0))) // checks which cell has the lowest f
+
+                    //aStarPath = closedList;
+                    foreach (Cell item in closedList)
                     {
-                        q = cell;
+                        aStarPath.Add(item);
                     }
+                    aStarPath.Add(q);
+                    closedList.Clear();
+                    openList.Clear();
+                    return aStarPath;
                 }
+                //foreach (Cell cell in openList) // runs through our open list
+                //{
+                //    if (cell.Calculate(goal.ElementAt(0)) < q.Calculate(goal.ElementAt(0))) // checks which cell has the lowest f
+                //    {
+                //        q = cell;
+                //    }
+                //}
                 openList.Remove(q);
 
                 List<Cell> successor = new List<Cell>();
                 //generate 8 successor
                 foreach (Cell item in GridManager.Grid)
                 {
-                    item.Calculate(goal.ElementAt(0));
+                  
+                    item.Calculate(target);
                     //Adds horizontal and vertical neighbours
                     if (q.Position.X + 1 == item.Position.X && q.Position.Y == item.Position.Y || q.Position.X - 1 == item.Position.X && q.Position.Y == item.Position.Y || q.Position.Y + 1 == item.Position.Y && q.Position.X == item.Position.X || q.Position.Y - 1 == item.Position.Y && q.Position.X == item.Position.X)
                     {
@@ -134,17 +136,31 @@ namespace Grid
                             if (neighbour.G > q.G + cost)
                             {
                                 neighbour.Parent = q;
+
                             }
                         }
-                        neighbour.Calculate(goal.ElementAt(0));
+                        neighbour.Calculate(target);
+                    }
+                    if (neighbour.Calculate(target) <= q.Calculate(target) && position.MyType!= target.MyType) // checks which cell has the lowest f
+                    {
+                        position = neighbour;
+
+                        if (neighbour.Calculate(target) < q.Calculate(target))
+                        {
+                            position = neighbour;
+
+                        }
+
+                        // q = neighbour;
                     }
                 }
                 if (!closedList.Contains(q))
                 {
+                    closedList.Add(q);
 
-                closedList.Add(q);
                 }
             }
+            return null;
         }
 
         public void Move(Cell newPosition)

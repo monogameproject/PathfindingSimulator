@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,10 +10,11 @@ namespace Grid
 {
     class GridManager
     {
+        private int round = 1;
         private bool isDone = false;
         private int algorithm;
         private BufferedGraphics backBuffer;
-        public  Graphics dc;
+        public Graphics dc;
         private Rectangle displayRectangle;
         private int cellRowCount;
         private int cellSize;
@@ -71,7 +72,7 @@ namespace Grid
             SetupWorld();
             foreach (Cell c in grid)
             {
-                if(c.MyType == CellType.STORMKEY)
+                if (c.MyType == CellType.STORMKEY)
                 {
                     goalQueue.Enqueue(c);
                 }
@@ -101,7 +102,7 @@ namespace Grid
             ChooseAlgorithm();
         }
 
-        
+
 
         public void Render()
         {
@@ -143,9 +144,9 @@ namespace Grid
         {
             for (int i = 0; i < grid.Count; i++)
             {
-                if(grid[i].Walkable == true)
+                if (grid[i].Walkable == true)
                 {
-                    if(i-1 >= 0)
+                    if (i - 1 >= 0)
                     {
                         if (i != 10 && i != 20 && i != 30 && i != 40 && i != 50 && i != 60 && i != 70 && i != 80 && i != 90)
                         {
@@ -156,7 +157,7 @@ namespace Grid
                             grid[i - cellRowCount].AddEdge(grid[i]);
                         }
                     }
-                    if(i+2 <= grid.Count)
+                    if (i + 2 <= grid.Count)
                     {
                         if (i != 9 && i != 19 && i != 29 && i != 39 && i != 49 && i != 59 && i != 69 && i != 79 && i != 89)
                         {
@@ -173,8 +174,8 @@ namespace Grid
 
         public void GameLoop()
         {
-            
-            if(currentTileOnPath < path.Count && algorithm >= 2)
+
+            if (currentTileOnPath < path.Count && algorithm >= 2)
             {
                 if (path[currentTileOnPath] == grid[68] && change == false)
                 {
@@ -191,6 +192,42 @@ namespace Grid
                 wizard.Position = goal;
                 currentTileOnPath = 0;
                 ChooseAlgorithm();
+            }
+            if (algorithm == 1)
+            {
+                wizard.Move(path[currentTileOnPath]);
+                if (wizard.Position.MyType == CellType.STORMKEY)
+                {
+                    round++;
+                    wizard.Position = path[currentTileOnPath];
+                    ChooseAlgorithm();
+                }
+                else if (wizard.Position.MyType == CellType.STORM)
+                {
+                    round++;
+                    wizard.Position = path[currentTileOnPath];
+
+                    ChooseAlgorithm();
+
+                }
+                else if (wizard.Position.MyType == CellType.ICEKEY)
+                {
+                    round++;
+                    wizard.Position = path[currentTileOnPath];
+
+                    ChooseAlgorithm();
+
+                }
+                else if (wizard.Position.MyType == CellType.ICE)
+                {
+                    round++;
+                    ChooseAlgorithm();
+                }
+                else
+                {
+                    currentTileOnPath++;
+
+                }
             }
             Render();
         }
@@ -362,7 +399,7 @@ namespace Grid
             Random rnd = new Random();
 
             int rndtal = rnd.Next(0, emptylist.Count);
-            Cell stormKey = emptylist[rndtal];
+            Cell stormKey = emptylist[0];
 
             rndtal = rnd.Next(0, emptylist.Count);
             Cell iceKey = emptylist[rndtal];
@@ -376,16 +413,48 @@ namespace Grid
             iceKey.Sprite = Image.FromFile(@"Images\BlueKey.png");
         }
 
+        public Cell Goals(CellType celltype)
+        {
+            foreach (Cell item in GridManager.Grid)
+            {
+                if (item.MyType == celltype)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
+
         public void ChooseAlgorithm()
         {
-            if(goalQueue.Count != 0)
+            if (goalQueue.Count != 0)
             {
                 goal = goalQueue.Dequeue();
 
                 switch (algorithm)
                 {
                     case 1:
-                        wizard.ClausAstar();
+                        Queue<Cell> target = new Queue<Cell>();
+                        target.Enqueue(Goals(CellType.STORMKEY));
+                        target.Enqueue(Goals(CellType.STORM));
+                        target.Enqueue(Goals(CellType.ICEKEY));
+                        target.Enqueue(Goals(CellType.ICE));
+                        switch (round)
+                        {
+                            case 1:
+                                path = wizard.ClausAstar(wStartCell, target.ElementAt(0));
+                                break;
+                            case 2:
+                                path = wizard.ClausAstar(wizard.Position, target.ElementAt(1));
+                                break;
+                            case 3:
+                                path = wizard.ClausAstar(wizard.Position, target.ElementAt(2));
+                                break;
+                            case 4:
+                                path = wizard.ClausAstar(wizard.Position, target.ElementAt(3));
+                                break;
+                        }
+
                         break;
                     case 2:
                         foreach (Cell c in grid)
@@ -397,8 +466,8 @@ namespace Grid
                         bfs = new BFS();
                         Cell endGoal = bfs.RunBFS(grid, goal, wizard.Position);
                         path = bfs.TrackPath(endGoal, wizard.Position);
-                        
-                        
+
+
                         break;
                     case 3:
                         foreach (Cell c in grid)
@@ -417,7 +486,7 @@ namespace Grid
             }
             else
             {
-              
+
             }
         }
     }
