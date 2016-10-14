@@ -139,7 +139,11 @@ namespace Grid
                         neighbour.Calculate(goal.ElementAt(0));
                     }
                 }
+                if (!closedList.Contains(q))
+                {
+
                 closedList.Add(q);
+                }
             }
         }
 

@@ -206,7 +206,7 @@ namespace Grid
             h = (diff.X + diff.Y) * 10;
 
 
-            return h;
+            h;
 
 
             //f
