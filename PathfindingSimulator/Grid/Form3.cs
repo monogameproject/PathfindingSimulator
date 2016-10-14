@@ -36,7 +36,10 @@ namespace Grid
         private void timer1_Tick(object sender, EventArgs e)
         {
             visualManager.GameLoop();
-            
+            if (visualManager.IsDone)
+            {
+                this.Close();
+            }
         }
     }
 }

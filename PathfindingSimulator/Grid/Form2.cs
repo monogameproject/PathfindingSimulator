@@ -36,6 +36,7 @@ namespace Grid
 
             BFS = new Form3();
             BFS.Show();
+            
         }
 
         private void button3_Click(object sender, EventArgs e)

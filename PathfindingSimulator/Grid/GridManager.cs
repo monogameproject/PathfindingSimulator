@@ -10,13 +10,14 @@ namespace Grid
 {
     class GridManager
     {
+        private bool isDone = false;
         private int algorithm;
         private BufferedGraphics backBuffer;
         public  Graphics dc;
         private Rectangle displayRectangle;
         private int cellRowCount;
         private int cellSize;
-        private List<Cell> grid;
+        private static List<Cell> grid;
         private List<Cell> path = new List<Cell>();
         private Wizard wizard;
         private Cell wStartCell = null;
@@ -32,7 +33,7 @@ namespace Grid
             get { return wizard; }
             set { wizard = value; }
         }
-        public List<Cell> Grid
+        public static List<Cell> Grid
         {
             get
             {
@@ -45,6 +46,18 @@ namespace Grid
             }
         }
 
+        public bool IsDone
+        {
+            get
+            {
+                return isDone;
+            }
+
+            set
+            {
+                isDone = value;
+            }
+        }
 
         public GridManager(Graphics dc, Rectangle displayRectangle, int algorithm)
         {
@@ -82,6 +95,7 @@ namespace Grid
                 if (c.MyType == CellType.ICE)
                 {
                     goalQueue.Enqueue(c);
+                    goalQueue.Enqueue(c);
                 }
             }
             ChooseAlgorithm();
@@ -104,7 +118,10 @@ namespace Grid
             }
             wizard.Render(dc);
             backBuffer.Render();
-
+            if (goalQueue.Count == 0)
+            {
+                isDone = true;
+            }
         }
 
         public void CreateGrid()
@@ -368,6 +385,7 @@ namespace Grid
                 switch (algorithm)
                 {
                     case 1:
+                        wizard.ClausAstar(wStartCell);
                         break;
                     case 2:
                         foreach (Cell c in grid)
