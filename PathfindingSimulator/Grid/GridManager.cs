@@ -10,6 +10,8 @@ namespace Grid
 {
     class GridManager
     {
+        private List<Cell> target = new List<Cell>();
+
         private int round = 1;
         private bool isDone = false;
         private int algorithm;
@@ -109,14 +111,20 @@ namespace Grid
 
             dc.Clear(Color.Green);
 
+
             foreach (Cell cell in grid)
             {
                 cell.Render(dc);
                 if (cell.Sprite == null)
                 {
-                    cell.Sprite = Image.FromFile(@"Images\Grass.png");
+                    if (algorithm < 1)
+                    {
+                        cell.Sprite = Image.FromFile(@"Images\Grass.png");
+
+                    }
                 }
             }
+
             wizard.Render(dc);
             backBuffer.Render();
             if (goalQueue.Count == 0)
@@ -174,7 +182,6 @@ namespace Grid
 
         public void GameLoop()
         {
-
             if (currentTileOnPath < path.Count && algorithm >= 2)
             {
                 if (path[currentTileOnPath] == grid[68] && change == false)
@@ -196,21 +203,13 @@ namespace Grid
             if (algorithm == 1)
             {
                 wizard.Move(path[currentTileOnPath]);
-                if (wizard.Position.MyType == CellType.STORMKEY)
+                if (wizard.Position.MyType == CellType.STORMKEY && round == 1)
                 {
                     round++;
                     wizard.Position = path[currentTileOnPath];
                     ChooseAlgorithm();
                 }
-                else if (wizard.Position.MyType == CellType.STORM)
-                {
-                    round++;
-                    wizard.Position = path[currentTileOnPath];
-
-                    ChooseAlgorithm();
-
-                }
-                else if (wizard.Position.MyType == CellType.ICEKEY)
+                else if (wizard.Position.MyType == CellType.STORM && round == 2)
                 {
                     round++;
                     wizard.Position = path[currentTileOnPath];
@@ -218,7 +217,15 @@ namespace Grid
                     ChooseAlgorithm();
 
                 }
-                else if (wizard.Position.MyType == CellType.ICE)
+                else if (wizard.Position.MyType == CellType.ICEKEY && round == 3)
+                {
+                    round++;
+                    wizard.Position = path[currentTileOnPath];
+
+                    ChooseAlgorithm();
+
+                }
+                else if (wizard.Position.MyType == CellType.ICE && round == 4)
                 {
                     round++;
                     ChooseAlgorithm();
@@ -374,19 +381,29 @@ namespace Grid
             {
                 if (item.MyType == CellType.EMPTY)
                 {
-                    item.Sprite = Image.FromFile(@"Images\Grass.png");
+                    if (algorithm > 1)
+                    {
+                        item.Sprite = Image.FromFile(@"Images\Grass.png");
+                    }
                     item.Walkable = true;
                     emptylist.Add(item);
                 }
                 if (item.MyType == CellType.PATH)
                 {
                     item.Walkable = true;
-                    item.Sprite = Image.FromFile(@"Images\Path.png");
+                    if (algorithm > 1)
+                    {
+                        item.Sprite = Image.FromFile(@"Images\Path.png");
+                    }
                 }
                 if (item.MyType == CellType.FORESTPATH)
                 {
                     item.Walkable = true;
-                    item.Sprite = Image.FromFile(@"Images\DarkDirt.png");
+                    if (algorithm > 1)
+                    {
+                        item.Sprite = Image.FromFile(@"Images\DarkDirt.png");
+                    }
+
                 }
                 if (item.Position == new Point(1, 8))
                 {
@@ -399,7 +416,7 @@ namespace Grid
             Random rnd = new Random();
 
             int rndtal = rnd.Next(0, emptylist.Count);
-            Cell stormKey = emptylist[0];
+            Cell stormKey = emptylist[rndtal];
 
             rndtal = rnd.Next(0, emptylist.Count);
             Cell iceKey = emptylist[rndtal];
@@ -425,8 +442,30 @@ namespace Grid
             return null;
         }
 
+        public void Reset()
+        {
+            currentTileOnPath = 0;
+
+            foreach (var item in grid)
+            {
+                item.F = 0;
+                item.G = 0;
+                item.H = 0;
+                item.Parent = null;
+            }
+        }
+
         public void ChooseAlgorithm()
         {
+            Reset();
+
+            foreach (Cell item in grid)
+            {
+                if (item.Walkable)
+                {
+                    item.Mycolor = Color.White;
+                }
+            }
             if (goalQueue.Count != 0)
             {
                 goal = goalQueue.Dequeue();
@@ -434,24 +473,26 @@ namespace Grid
                 switch (algorithm)
                 {
                     case 1:
-                        Queue<Cell> target = new Queue<Cell>();
-                        target.Enqueue(Goals(CellType.STORMKEY));
-                        target.Enqueue(Goals(CellType.STORM));
-                        target.Enqueue(Goals(CellType.ICEKEY));
-                        target.Enqueue(Goals(CellType.ICE));
                         switch (round)
                         {
                             case 1:
-                                path = wizard.ClausAstar(wStartCell, target.ElementAt(0));
+                                target.Add(Goals(CellType.STORMKEY));
+                                path = wizard.ClausAstar(wizard.Position, target.ElementAt(0));
                                 break;
                             case 2:
+                                target.Add(Goals(CellType.STORM));
                                 path = wizard.ClausAstar(wizard.Position, target.ElementAt(1));
                                 break;
                             case 3:
+                                target.Add(Goals(CellType.ICEKEY));
                                 path = wizard.ClausAstar(wizard.Position, target.ElementAt(2));
                                 break;
                             case 4:
+                                target.Add(Goals(CellType.ICE));
                                 path = wizard.ClausAstar(wizard.Position, target.ElementAt(3));
+                                break;
+                            default:
+                                isDone = true;
                                 break;
                         }
 

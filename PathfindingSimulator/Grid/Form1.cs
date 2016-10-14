@@ -35,6 +35,10 @@ namespace Grid
         {
             //Draws all our cells
             visualManager.GameLoop();
+            if (visualManager.IsDone)
+            {
+                this.Close();
+            }
         }
     }
 }

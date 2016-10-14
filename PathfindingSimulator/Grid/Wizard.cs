@@ -10,10 +10,11 @@ namespace Grid
 {
     class Wizard
     {
+        bool endLoop = false;
         private bool isDone = false;
         List<Cell> openList;
         List<Cell> closedList;
-       private static List<Cell> aStarPath= new List<Cell>();
+        private static List<Cell> aStarPath = new List<Cell>();
         Point wizardPosition;
         private Cell position;
         public Cell Position
@@ -43,10 +44,10 @@ namespace Grid
         }
 
 
-        
+
         public List<Cell> ClausAstar(Cell start, Cell target)
         {
-            
+
 
             openList = new List<Cell>();
             closedList = new List<Cell>();
@@ -56,36 +57,40 @@ namespace Grid
             openList.Add(start);
             while (openList.Count > 0)
             {
+                foreach (Cell item in openList)
+                {
+                    item.Mycolor = Color.Green;
+                }
+                foreach (Cell item in closedList)
+                {
+                    item.Mycolor = Color.Blue;
+                }
                 Cell q = position;
 
                 if (q.MyType == target.MyType)
                 {
-
+                    Cell backTrackNode = q;
                     //aStarPath = closedList;
-                    foreach (Cell item in closedList)
+                    while (backTrackNode != null)
                     {
-                        aStarPath.Add(item);
+                        aStarPath.Add(backTrackNode);
+                        backTrackNode = backTrackNode.Parent;
+
+                        if (backTrackNode == start)
+                            break;
                     }
-                    aStarPath.Add(q);
                     closedList.Clear();
                     openList.Clear();
+                    aStarPath.Reverse();
                     return aStarPath;
                 }
-                //foreach (Cell cell in openList) // runs through our open list
-                //{
-                //    if (cell.Calculate(goal.ElementAt(0)) < q.Calculate(goal.ElementAt(0))) // checks which cell has the lowest f
-                //    {
-                //        q = cell;
-                //    }
-                //}
+               
                 openList.Remove(q);
 
                 List<Cell> successor = new List<Cell>();
                 //generate 8 successor
                 foreach (Cell item in GridManager.Grid)
                 {
-                  
-                    item.Calculate(target);
                     //Adds horizontal and vertical neighbours
                     if (q.Position.X + 1 == item.Position.X && q.Position.Y == item.Position.Y || q.Position.X - 1 == item.Position.X && q.Position.Y == item.Position.Y || q.Position.Y + 1 == item.Position.Y && q.Position.X == item.Position.X || q.Position.Y - 1 == item.Position.Y && q.Position.X == item.Position.X)
                     {
@@ -113,6 +118,7 @@ namespace Grid
                         {
                             openList.Add(neighbour);
                             neighbour.Parent = q;
+                            neighbour.Calculate(target, q);
                         }
                         else
                         {
@@ -133,26 +139,26 @@ namespace Grid
                                 cost = 10;
                             }
                             //checks if chosenCell is a better parent than the old one
-                            if (neighbour.G > q.G + cost)
+                            if (neighbour.G > q.G)
                             {
                                 neighbour.Parent = q;
-
+                                neighbour.Calculate(target, q);
                             }
                         }
-                        neighbour.Calculate(target);
                     }
-                    if (neighbour.Calculate(target) <= q.Calculate(target) && position.MyType!= target.MyType) // checks which cell has the lowest f
+
+                    if (neighbour.Calculate(target, q) <= q.Calculate(target, q) && position.MyType != target.MyType) // checks which cell has the lowest f
                     {
                         position = neighbour;
 
-                        if (neighbour.Calculate(target) < q.Calculate(target))
+                        if (neighbour.Calculate(target, q) < q.Calculate(target, q))
                         {
                             position = neighbour;
 
                         }
 
-                        // q = neighbour;
                     }
+
                 }
                 if (!closedList.Contains(q))
                 {

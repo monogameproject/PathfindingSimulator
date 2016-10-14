@@ -12,7 +12,7 @@ namespace Grid
 
     class Cell
     {
-
+        private Color mycolor = new Color();
         private Point position;
 
         public bool Visited = false;
@@ -146,6 +146,19 @@ namespace Grid
             }
         }
 
+        public Color Mycolor
+        {
+            get
+            {
+                return mycolor;
+            }
+
+            set
+            {
+                mycolor = value;
+            }
+        }
+
         /// <summary>
         /// The cell's constructor
         /// </summary>
@@ -154,7 +167,7 @@ namespace Grid
         public Cell(Point position, int size)
         {
             this.position = position;
-
+            mycolor = Color.White;
             this.cellSize = size;
             parent = this;
 
@@ -166,7 +179,7 @@ namespace Grid
         /// <param name="dc">The graphic context</param>
         public void Render(Graphics dc)
         {
-            dc.FillRectangle(new SolidBrush(Color.White), BoundingRectangle);
+            dc.FillRectangle(new SolidBrush(mycolor), BoundingRectangle);
 
             dc.DrawRectangle(new Pen(Color.Black), BoundingRectangle);
 
@@ -178,27 +191,27 @@ namespace Grid
 
 #if DEBUG
             dc.DrawString(string.Format("{0}", position), new Font("Arial", 7, FontStyle.Regular), new SolidBrush(Color.Black), position.X * cellSize, (position.Y * cellSize) + 10);
-            dc.DrawString(string.Format("F {0} \nG {1} \nH {2}", f, g, h, parent.Position), new Font("Arial", 7, FontStyle.Regular), new SolidBrush(Color.Red), position.X * cellSize, (position.Y * cellSize) + 20);
+            dc.DrawString(string.Format("F {0} \nG {1} \nH {2}", f, g, h, parent?.Position), new Font("Arial", 7, FontStyle.Regular), new SolidBrush(Color.Red), position.X * cellSize, (position.Y * cellSize) + 20);
 
 #endif
         }
 
-        public int Calculate(Cell goal)
+        public int Calculate(Cell goal, Cell curr)
         {
             //g
-            Point diff = new Point(position.X - Parent.Position.X, position.Y - Parent.Position.Y);
+            Point diff = new Point(position.X - curr.Position.X, position.Y - curr.Position.Y);
 
             if (Math.Abs(diff.X) == 1 && Math.Abs(diff.Y) == 1)
             {
-                g = Parent.G + 14;
+                g = curr.G + 14;
             }
             else if (diff.X == 0 && diff.Y == 0)
             {
-                g = Parent.G + 0;
+                g = curr.G + 0;
             }
             else
             {
-                g = Parent.G + 10;
+                g = curr.G + 10;
             }
 
             //h

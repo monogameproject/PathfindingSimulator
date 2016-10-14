@@ -35,6 +35,7 @@
             // Loop
             // 
             this.Loop.Enabled = true;
+            this.Loop.Interval = 200;
             this.Loop.Tick += new System.EventHandler(this.Loop_Tick);
             // 
             // Form1
