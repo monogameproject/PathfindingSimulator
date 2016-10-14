@@ -105,7 +105,7 @@ namespace Grid
 
                 foreach (Cell neighbour in successor)
                 {
-                    if (!successor.Contains(neighbour) && neighbour.Walkable && !closedList.Contains(neighbour)) //Sorts out the false/unreacable neibourghs
+                    if (!closedList.Contains(neighbour)) //Sorts out the false/unreacable neibourghs
                     {
                         if (!openList.Contains(neighbour))
                         {
