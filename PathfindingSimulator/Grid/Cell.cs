@@ -204,10 +204,7 @@ namespace Grid
             //h
             diff = new Point(Math.Abs(goal.Position.X - position.X), Math.Abs(goal.Position.Y - position.Y));
             h = (diff.X + diff.Y) * 10;
-
-
-            h;
-
+            
 
             //f
             f = g + h;
