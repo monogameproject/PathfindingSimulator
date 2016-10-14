@@ -53,7 +53,7 @@ namespace Grid
             }
             return null;
         }
-        public void ClausAstar(Cell start)
+        public void ClausAstar()
         {
             Queue<Cell> goal = new Queue<Cell>();
             goal.Enqueue(Goals(STORMKEY));
@@ -64,7 +64,7 @@ namespace Grid
             openList = new List<Cell>();
             closedList = new List<Cell>();
 
-            start = position;
+            Cell start = position;
 
             openList.Add(start);
             while (openList.Count > 0)

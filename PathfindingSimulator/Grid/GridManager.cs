@@ -174,7 +174,7 @@ namespace Grid
         public void GameLoop()
         {
             
-            if(currentTileOnPath < path.Count)
+            if(currentTileOnPath < path.Count && algorithm >= 2)
             {
                 if (path[currentTileOnPath] == grid[68] && change == false)
                 {
@@ -186,7 +186,7 @@ namespace Grid
                 wizard.Move(path[currentTileOnPath]);
                 currentTileOnPath++;
             }
-            else
+            else if (algorithm >= 2)
             {
                 wizard.Position = goal;
                 currentTileOnPath = 0;
@@ -385,7 +385,7 @@ namespace Grid
                 switch (algorithm)
                 {
                     case 1:
-                        wizard.ClausAstar(wStartCell);
+                        wizard.ClausAstar();
                         break;
                     case 2:
                         foreach (Cell c in grid)
